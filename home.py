@@ -744,7 +744,7 @@ tk.Button(btn_frame, text="Input Video", command=selectvideo1)
 tk.Button(btn_frame, text="Add Criminal Details", command=getPage1)
 tk.Button(btn_frame, text="Image Surveillance", command=getPage2)
 tk.Button(btn_frame, text="Video Surveillance", command=getPage3)
-
+tk.Button(btn_frame, text="Web Surveillance", command=getPage5).grid(row=8, column=1, pady=(30,30), padx=(40, 200))
 
 for btn in btn_frame.winfo_children():
     btn.configure(font="Arial 20", width=17, bg="#000000", fg="white",
