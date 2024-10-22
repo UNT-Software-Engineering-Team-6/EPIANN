@@ -82,3 +82,9 @@ def recognize_face(model, frame, gray_frame, face_coords, names):
     return (frame, recognized)
 
 #train_model()
+
+
+
+def train_model2():
+    
+
