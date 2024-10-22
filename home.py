@@ -674,27 +674,6 @@ def getPage5():
         tk.Button(btn_grid, text="Web Surveilliance", command=getPage6, font="Arial 15 bold", padx=20, bg="#000000",
                 fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#e1e8df",
                 activeforeground="white").grid(row=0, column=0, padx=25, pady=25)
-                b=0
-def getPage5():
-    global active_page, video_loop, left_frame, right_frame, thread_event, heading ,b
-    
-    active_page = 5
-    
-    pages[5].lift()
-    if b==0:
-        basicPageSetup(5)
-        b=b+1
-
-    # heading.configure(text="Web Surveillance")
-    
-
-
-        btn_grid = tk.Frame(left_frame,bg="#e1e8df")
-        btn_grid.pack()
-
-        tk.Button(btn_grid, text="Web Surveilliance", command=getPage6, font="Arial 15 bold", padx=20, bg="#000000",
-                fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#e1e8df",
-                activeforeground="white").grid(row=0, column=0, padx=25, pady=25)
 
 
 
