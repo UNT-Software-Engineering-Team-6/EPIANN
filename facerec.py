@@ -87,4 +87,39 @@ def recognize_face(model, frame, gray_frame, face_coords, names):
 
 def train_model2():
     
+    model = cv2.face.LBPHFaceRecognizer_create()
+
+    fn_dir = 'face_samples'
+
+    print('Training...')
+
+    (images, labels, names, id) = ([], [], {}, 0)
+
+    for (subdirs, dirs, files) in os.walk(fn_dir):
+        # Loop through each folder named after the subject in the photos
+        for subdir in dirs:
+            names[id] = subdir
+            subjectpath = os.path.join(fn_dir, subdir)
+            # Loop through each photo in the folder
+            for filename in os.listdir(subjectpath):
+                # Skip non-image formats
+                f_name, f_extension = os.path.splitext(filename)
+                if f_extension.lower() not in ['.png', '.jpg', '.jpeg', '.gif', '.pgm']:
+                    print("Skipping "+filename+", wrong file type")
+                    continue
+                path = os.path.join(subjectpath, filename)
+                label = id
+                # Add to training data
+                images.append(cv2.imread(path, 0))
+                labels.append(int(label))
+            id += 1
+
+    # Create numpy arrays from the lists
+    (images, labels) = [np.array(lst) for lst in [images, labels]]
+    # Train the model
+    model.train(images, labels)
+
+    return (model, names)
+    
+
 
