@@ -508,7 +508,107 @@ def videoLoop(path,model, names):
 
 
 
-##################################################################################################################################################################################################################################
+
+
+def videoLoop2(model, names):
+    filenam='jagadeesh'
+    global thread_event, left_frame, webcam, img_label
+    start=time.time()
+    webcam = cv2.VideoCapture(0)
+    old_recognized = []
+    crims_found_labels = []
+    times = []
+    img_label = None
+    field=['S.No.', 'Name', 'Time']
+    g=filenam+'.csv'
+    # filename = "g.csv"
+    filename = g
+    # with open('people.csv', 'w', ) as csvfile:
+    # peoplewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    # os.path.join(path, vid.split('.')[0]+'_'+str(count)+'.png'
+    num=0
+    try:
+        # with open('people_Details.csv', 'w', ) as csvfile:
+        with open(filename, 'w') as csvfile:
+            # peoplewriter = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            csvwriter = csv.writer(csvfile)
+            csvwriter.writerow(field)   
+            while not thread_event.is_set():
+                
+                # Loop until the camera is working
+                
+                    
+                    while (True):
+                        # Put the image from the webcam into 'frame'
+                        (return_val, frame) = webcam.read()
+                        if (return_val == True):
+                            break
+                        # else:
+                        #     print("Failed to open webcam. Trying again...")
+
+                    # Flip the image (optional)
+                    frame = cv2.flip(frame, 1, 0)
+                    # Convert frame to grayscale
+                    gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+                    # Detect Faces
+                    face_coords = detect_faces(gray_frame)
+                    (frame, recognized) = recognize_face(model, frame, gray_frame, face_coords, names)
+
+                    # Recognize Faces
+                    recog_names = [item[0] for item in recognized]
+                    if(recog_names != old_recognized):
+                        for wid in right_frame.winfo_children():
+                            wid.destroy()
+                        del(crims_found_labels[:])
+
+                        for i, crim in enumerate(recognized):
+                            num += 1
+                            x = time.time() - start
+                            
+                            # Retrieve criminal data
+                            _, crim_data = retrieveData(crim[0].lower())
+                            
+                            # Check if Crimes data exists in the retrieved data
+                            if "Crimes" in crim_data:
+                                crimes = int(crim_data["Crimes"])
+                                color = "green" if crimes == 0 else "red"
+                            else:
+                                print(f"Crimes data not found for {crim[0]}")
+                                # Default to orange if crimes data is not found
+                                color = "orange"
+                            
+                            # Create the label with the appropriate text and color
+                            crims_found_labels.append(tk.Label(right_frame, text=crim[0], bg=color,
+                                                                font="Arial 15 bold", pady=20))
+                            
+                            # Pack the label into right_frame
+                            crims_found_labels[i].pack(fill="x", padx=20, pady=10)
+                            
+                            # Bind the label to the showCriminalProfile function
+                            crims_found_labels[i].bind("<Button-1>", lambda e, name=crim[0]: showCriminalProfile(name))
+                            
+                            # Save the data to CSV
+                            y = crim[0]
+                            print(x, y)
+                            arr = [num, y, x]
+                            # peoplewriter.writerow(arr)
+                            csvwriter.writerow(arr)  
+
+                            
+                            # print('hello')
+                        old_recognized = recog_names
+
+                    # Display Video stream
+                    img_size = min(left_frame.winfo_width(), left_frame.winfo_height()) - 20
+
+                    showImage(frame, img_size)
+
+    except RuntimeError:
+        print("[INFO]Caught Runtime Error")
+    except tk.TclError:
+        print("[INFO]Caught Tcl Error")
+
 # video surveillance Page ##
 def getPage4(path):
     p=path
