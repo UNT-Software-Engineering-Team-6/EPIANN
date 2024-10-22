@@ -608,6 +608,10 @@ def videoLoop2(model, names):
         print("[INFO]Caught Tcl Error")
 
 
+def videoLoop2(model, names):
+   
+
+
 # video surveillance Page ##
 def getPage4(path):
     p=path
