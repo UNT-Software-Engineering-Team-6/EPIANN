@@ -81,4 +81,80 @@ def recognize_face(model, frame, gray_frame, face_coords, names):
 
     return (frame, recognized)
 
-#train_model()
+
+
+def train_model2():
+    
+    model = cv2.face.LBPHFaceRecognizer_create()
+
+    fn_dir = 'face_samples'
+
+    print('Training...')
+
+    (images, labels, names, id) = ([], [], {}, 0)
+
+    for (subdirs, dirs, files) in os.walk(fn_dir):
+        # Loop through each folder named after the subject in the photos
+        for subdir in dirs:
+            names[id] = subdir
+            subjectpath = os.path.join(fn_dir, subdir)
+            # Loop through each photo in the folder
+            for filename in os.listdir(subjectpath):
+                # Skip non-image formats
+                f_name, f_extension = os.path.splitext(filename)
+                if f_extension.lower() not in ['.png', '.jpg', '.jpeg', '.gif', '.pgm']:
+                    print("Skipping "+filename+", wrong file type")
+                    continue
+                path = os.path.join(subjectpath, filename)
+                label = id
+                # Add to training data
+                images.append(cv2.imread(path, 0))
+                labels.append(int(label))
+            id += 1
+
+    # Create numpy arrays from the lists
+    (images, labels) = [np.array(lst) for lst in [images, labels]]
+    # Train the model
+    model.train(images, labels)
+
+    return (model, names)
+    
+
+#train_model()# Part 3: Recognize faces
+def recognize_face2(model, frame, gray_frame, face_coords, names):
+    (img_width, img_height) = (112, 92)
+    recognized = []
+    recog_names = []
+
+    for (x, y, w, h) in face_coords:
+        face = gray_frame[y:y + h, x:x + w]
+        face_resize = cv2.resize(face, (img_width, img_height))
+
+        # Recognize the face
+        prediction, confidence = model.predict(face_resize)
+
+        if confidence < 95:
+            name = names.get(prediction, "Unknown")  # Get the name from the dictionary or default to "Unknown"
+            _, crim_data = retrieveData(name)
+            if "Crimes" in crim_data:
+                crimes = int(crim_data["Crimes"])
+                if crimes == 0:
+                    # Just add the recognized name to the list
+                    if name not in recog_names:
+                        recog_names.append(name)
+                        recognized.append((name.capitalize(), confidence))
+                        text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                        font_scale = min(w / text_width, 1)
+                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
+                else:
+                    # Add the recognized name to the list
+                    if name not in recog_names:
+                        recog_names.append(name)
+                        recognized.append((name.capitalize(), confidence))
+                        text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                        font_scale = min(w / text_width, 1)
+                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
+        else:
+            cv2.putText(frame, "Not Identified", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+
+    return (frame, recognized)
