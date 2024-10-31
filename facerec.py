@@ -122,4 +122,41 @@ def train_model2():
     return (model, names)
     
 
+#train_model()# Part 3: Recognize faces
+def recognize_face2(model, frame, gray_frame, face_coords, names):
+    (img_width, img_height) = (112, 92)
+    recognized = []
+    recog_names = []
 
+    for (x, y, w, h) in face_coords:
+        face = gray_frame[y:y + h, x:x + w]
+        face_resize = cv2.resize(face, (img_width, img_height))
+
+        # Recognize the face
+        prediction, confidence = model.predict(face_resize)
+
+        if confidence < 95:
+            name = names.get(prediction, "Unknown")  # Get the name from the dictionary or default to "Unknown"
+            _, crim_data = retrieveData(name)
+            if "Crimes" in crim_data:
+                crimes = int(crim_data["Crimes"])
+                if crimes == 0:
+                    # Just add the recognized name to the list
+                    if name not in recog_names:
+                        recog_names.append(name)
+                        recognized.append((name.capitalize(), confidence))
+                        text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                        font_scale = min(w / text_width, 1)
+                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
+                else:
+                    # Add the recognized name to the list
+                    if name not in recog_names:
+                        recog_names.append(name)
+                        recognized.append((name.capitalize(), confidence))
+                        text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                        font_scale = min(w / text_width, 1)
+                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
+        else:
+            cv2.putText(frame, "Not Identified", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+
+    return (frame, recognized)
