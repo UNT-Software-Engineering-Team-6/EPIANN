@@ -674,7 +674,6 @@ def getPage5():
         tk.Button(btn_grid, text="Web Surveilliance", command=getPage6, font="Arial 15 bold", padx=20, bg="#000000",
                 fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#e1e8df",
                 activeforeground="white").grid(row=0, column=0, padx=25, pady=25)
-                b=0
 
 
 def selectvideo():
