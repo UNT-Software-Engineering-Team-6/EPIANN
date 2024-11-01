@@ -54,7 +54,7 @@ def detect_faces(gray_frame):
     faces = haar_cascade.detectMultiScale(mini_frame)
     return faces
 
-#code to recognize the face 
+
 def recognize_face(model, frame, gray_frame, face_coords, names):
     (img_width, img_height) = (112, 92)
     recognized = []
