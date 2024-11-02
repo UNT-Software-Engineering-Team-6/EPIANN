@@ -632,27 +632,29 @@ def getPage4(path):
     thread = threading.Thread(target=videoLoop, args=(p,model, names))
     thread.start()
 
+c=0
 def getPage3():
-    global active_page, video_loop, left_frame, right_frame, thread_event, heading
+    global active_page, video_loop, left_frame, right_frame, thread_event, heading ,c
+    
     active_page = 3
+    
     pages[3].lift()
+    if c==0:
+        basicPageSetup(3)
+        c=c+1
 
-    basicPageSetup(3)
-    heading.configure(text="Video Surveillance")
+    # heading.configure(text="Web Surveillance")
+    
 
-    btn_grid = tk.Frame(left_frame,bg="#3E3B3C")
-    btn_grid.pack()
 
-    tk.Button(btn_grid, text="Select Video", command=selectvideo, font="Arial 15 bold", padx=20, bg="#000000",
-                fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#3E3B3C",
+        btn_grid = tk.Frame(left_frame,bg="#e1e8df")
+        btn_grid.pack()
+
+        tk.Button(btn_grid, text="Select Video", command=selectvideo, font="Arial 15 bold", padx=20, bg="#000000",
+                fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#e1e8df",
                 activeforeground="white").grid(row=0, column=0, padx=25, pady=25)
     
     
-
-    # tk.Button(btn_grid, text="Recognize", command=getPage3(), font="Arial 15 bold", padx=20, bg="#000000",
-    #        fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#3E3B3C",
-    #        activeforeground="white").grid(row=0, column=1, padx=25, pady=25)
-
 b=0
 def getPage5():
     global active_page, video_loop, left_frame, right_frame, thread_event, heading ,b
