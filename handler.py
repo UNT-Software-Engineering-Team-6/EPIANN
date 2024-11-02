@@ -76,20 +76,21 @@ def retrieveData(name):
 
         # Iterate through the rows in the CSV file
         for row in csvreader:
-            if row[0].lower() == name.lower():
-            # Check if the name in the CSV matches the provided name
-                # Extract the ID
-                id = row[0]
+            if row and len(row) > 0:
+                if row[0].lower() == name.lower():
+                # Check if the name in the CSV matches the provided name
+                    # Extract the ID
+                    id = row[0]
+    
+                    # Extract the criminal data into a dictionary
+                    crim_data["Name"] = row[0]
+                    crim_data["Father's Name"] = row[1]
+                    crim_data["Gender"] = row[2]
+                    crim_data["DOB"] = row[3]
+                    crim_data["Crimes"] = row[4]
 
-                # Extract the criminal data into a dictionary
-                crim_data["Name"] = row[0]
-                crim_data["Father's Name"] = row[1]
-                crim_data["Gender"] = row[2]
-                crim_data["DOB"] = row[3]
-                crim_data["Crimes"] = row[4]
-
-                # Name found, exit the loop
-                break
+                    # Name found, exit the loop
+                    break
 
     # Check if the name was not found
     if id is None:
