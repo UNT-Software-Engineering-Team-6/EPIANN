@@ -34,8 +34,8 @@ root.geometry("1000x900+200+100")
 
 # create Pages
 pages = []
-for i in range(5):
-    pages.append(tk.Frame(root, bg="#3E3B3C"))
+for i in range(7):
+    pages.append(tk.Frame(root, bg="#e1e8df"))
     pages[i].pack(side="top", fill="both", expand=True)
     pages[i].place(x=0, y=0, relwidth=1, relheight=1)
 
