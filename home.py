@@ -632,6 +632,28 @@ def getPage4(path):
     thread = threading.Thread(target=videoLoop, args=(p,model, names))
     thread.start()
 
+def getPage6():
+    # print(p)
+    global active_page, video_loop2, left_frame, right_frame, thread_event, heading
+    active_page = 6
+    pages[6].lift()
+
+    basicPageSetup(6)
+    heading.configure(text="Web Surveillance")
+    right_frame.configure(text="Detected Person details")
+    left_frame.configure(pady=40)
+
+    btn_grid = tk.Frame(right_frame, bg="#e1e8df")
+    btn_grid.pack()
+
+    (model, names) = train_model()
+    print('Training Successful. Detecting Faces')
+
+    thread_event = threading.Event()
+    thread = threading.Thread(target=videoLoop2, args=(model, names))
+    thread.start()
+
+    
 def getPage3():
     global active_page, video_loop, left_frame, right_frame, thread_event, heading
     active_page = 3
