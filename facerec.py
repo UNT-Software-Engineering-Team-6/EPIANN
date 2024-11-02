@@ -83,7 +83,13 @@ def recognize_face(model, frame, gray_frame, face_coords, names):
 
 #train_model()
 
+from handler import retrieveData
+import numpy as np
+from playsound import playsound
+from mtcnn import MTCNN 
 
+size = 2
+detector = MTCNN()
 
 def train_model2():
     
@@ -120,6 +126,14 @@ def train_model2():
     model.train(images, labels)
 
     return (model, names)
+
+# Part 2: Use MTCNN for face detection
+def detect_faces2(gray_frame):
+    bgr_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGR)  # Convert to BGR format
+    faces = detector.detect_faces(bgr_frame)
+    face_coords = [[face['box'][0], face['box'][1], face['box'][2], face['box'][3]] for face in faces]
+    return face_coords
+
     
 
 #train_model()# Part 3: Recognize faces
