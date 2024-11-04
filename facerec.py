@@ -7,6 +7,9 @@ import os
 size = 2
 haar_cascade = cv2.CascadeClassifier(r'C:\Users\hp\Documents\GitHub\Face-Recognition-For-Criminal-Detection-GUi\face_cascade.xml')
 
+
+
+
 # Part 1: Create fisherRecognizer
 def train_model():
     model = cv2.face.LBPHFaceRecognizer_create()
@@ -87,7 +90,15 @@ from handler import retrieveData
 import numpy as np
 from playsound import playsound
 from mtcnn import MTCNN 
+import pygame
 
+pygame.init()
+
+def play_alert_sound():
+    pygame.mixer.music.load("alert.mp3")
+    pygame.mixer.music.play()
+
+    
 size = 2
 detector = MTCNN()
 
@@ -162,6 +173,7 @@ def recognize_face2(model, frame, gray_frame, face_coords, names):
                         text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                         font_scale = min(w / text_width, 1)
                         cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
+                    play_alert_sound()
                 else:
                     # Add the recognized name to the list
                     if name not in recog_names:
