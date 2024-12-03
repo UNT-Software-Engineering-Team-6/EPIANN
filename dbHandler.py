@@ -1,64 +1,30 @@
-import pymysql
+def basicPageSetup(pageNo):
+    global left_frame, right_frame, heading
 
-def insertData(data):
-    rowId = 0
+    back_img = tk.PhotoImage(file= r"E:\FinalYearProjectDetails\MajorprojectFacialRecognition\Facial-Recognition-for-Crime-Detection\img\back.png")
+    back_button = tk.Button(pages[pageNo], image=back_img, bg="#e1e8df", bd=0, highlightthickness=0,
+           activebackground="#e1e8df", command=goBack)
+    back_button.image = back_img
+    back_button.place(x=2, y=2)
 
-    db = pymysql.connect("localhost", "", "", "testdb")
-    cursor = db.cursor()
-    print("database connected")
+    heading = tk.Label(pages[pageNo], fg="black", bg="#e1e8df", font="Arial 20 bold", pady=10)
+    heading.pack()
 
-    query = "INSERT INTO criminaldata VALUES(0, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % \
-            (data["Name"], data["Father's Name"], data["Mother's Name"], data["Gender"],
-             data["DOB(yyyy-mm-dd)"], data["Blood Group"], data["Identification Mark"],
-             data["Nationality"], data["Religion"], data["Crimes Done"])
+    content = tk.Frame(pages[pageNo], bg="#e1e8df", pady=20)
+    content.pack(expand="true", fill="both")
 
-    try:
-        cursor.execute(query)
-        db.commit()
-        rowId = cursor.lastrowid
-        print("data stored on row %d" % rowId)
-    except:
-        db.rollback()
-        print("Data insertion failed")
+    left_frame = tk.Frame(content, bg="#e1e8df")
+    left_frame.grid(row=0, column=0, sticky="nsew")
 
+    right_frame = tk.LabelFrame(content, text="Detected Criminals", bg="#e1e8df", font="Arial 20 bold", bd=4,
+                             foreground="#2ea3ef", labelanchor="n")
+    right_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
-    db.close()
-    print("connection closed")
-    return rowId
+    content.grid_columnconfigure(0, weight=1, uniform="group1")
+    content.grid_columnconfigure(1, weight=1, uniform="group1")
+    content.grid_rowconfigure(0, weight=1)
 
-def retrieveData(name):
-    id = None
-    crim_data = None
-
-    db = pymysql.connect("localhost", "criminaluser", "", "criminaldb")
-    cursor = db.cursor()
-    print("database connected")
-
-    query = "SELECT * FROM criminaldata WHERE name='%s'"%name
-
-    try:
-        cursor.execute(query)
-        result = cursor.fetchone()
-
-        id=result[0]
-        crim_data = {
-            "Name" : result[1],
-            "Father's Name" : result[2],
-            "Mother's Name" : result[3],
-            "Gender" : result[4],
-            "DOB(yyyy-mm-dd)" : result[5],
-            "Blood Group" : result[6],
-            "Identification Mark" : result[7],
-            "Nationality" : result[8],
-            "Religion" : result[9],
-            "Crimes Done" : result[10]
-        }
-
-        print("data retrieved")
-    except:
-        print("Error: Unable to fetch data")
-
-    db.close()
-    print("connection closed")
-
-    return (id, crim_data)
+ # Add logo to the left frame at the bottom-left corner
+    logo = tk.PhotoImage(file=r"E:\FinalYearProjectDetails\MajorprojectFacialRecognition\Facial-Recognition-for-Crime-Detection\colours.png")
+    logo_label = tk.Label(left_frame, image=logo, bg="#e1e8df", bd=0)
+    logo_label.pack(side='bottom', padx=10, pady=10, anchor='sw')  # Adjust padx and pady values as needed
