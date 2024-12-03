@@ -408,17 +408,17 @@ def getPage2():
     pages[2].lift()
 
     basicPageSetup(2)
-    heading.configure(text="Detect Criminal")
-    right_frame.configure(text="Detected Criminals", fg="white")
+    heading.configure(text="Image Surveillance")
+    right_frame.configure(text="Detected Persons Details", fg="black")
 
-    btn_grid = tk.Frame(left_frame, bg="#3E3B3C")
+    btn_grid = tk.Frame(left_frame, bg="#e1e8df")
     btn_grid.pack()
 
     tk.Button(btn_grid, text="Select Image", command=selectImage, font="Arial 15 bold", padx=20, bg="#000000",
-            fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#3E3B3C",
+            fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#e1e8df",
             activeforeground="white").grid(row=0, column=0, padx=25, pady=25)
     tk.Button(btn_grid, text="Recognize", command=startRecognition, font="Arial 15 bold", padx=20, bg="#000000",
-           fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#3E3B3C",
+           fg="white", pady=10, bd=0, highlightthickness=0, activebackground="#e1e8df",
            activeforeground="white").grid(row=0, column=1, padx=25, pady=25)
 
 # def path_leaf(path):
