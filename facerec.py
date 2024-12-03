@@ -148,6 +148,7 @@ def detect_faces2(gray_frame):
     
 
 #train_model()# Part 3: Recognize faces
+# Part 3: Recognize faces
 def recognize_face2(model, frame, gray_frame, face_coords, names):
     (img_width, img_height) = (112, 92)
     recognized = []
@@ -161,28 +162,36 @@ def recognize_face2(model, frame, gray_frame, face_coords, names):
         prediction, confidence = model.predict(face_resize)
 
         if confidence < 95:
-            name = names.get(prediction, "Unknown")  # Get the name from the dictionary or default to "Unknown"
+            name = names.get(prediction, "Unknown") # Get the name from the dictionary or default to "Unknown"
             _, crim_data = retrieveData(name)
             if "Crimes" in crim_data:
                 crimes = int(crim_data["Crimes"])
                 if crimes == 0:
-                    # Just add the recognized name to the list
+                    # Green rectangle if no crimes committed
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
                     if name not in recog_names:
                         recog_names.append(name)
                         recognized.append((name.capitalize(), confidence))
                         text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                         font_scale = min(w / text_width, 1)
-                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
-                    play_alert_sound()
+                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 255, 0), 2, cv2.LINE_AA)
+                    play_safe_sound()
                 else:
-                    # Add the recognized name to the list
+                    # Red rectangle if crimes committed
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     if name not in recog_names:
                         recog_names.append(name)
                         recognized.append((name.capitalize(), confidence))
                         text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                         font_scale = min(w / text_width, 1)
-                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
+                        cv2.putText(frame, name, (x, y + h + 20), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), 2, cv2.LINE_AA)
+                    play_alert_sound()
         else:
-            cv2.putText(frame, "Not Identified", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 165, 255), 5)  # Orange rectangle when face is not recognized
+            cv2.putText(frame, "Not Identified", (x, y + h + 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 165, 255), 2, cv2.LINE_AA)
 
+    # frame = cv2.flip(frame, 1)
     return (frame, recognized)
+
+# Train the model
+(model, names) = train_model()
