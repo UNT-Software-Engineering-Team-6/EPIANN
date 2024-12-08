@@ -759,25 +759,33 @@ def selectvideo1():
        detect(p)
 
 ######################################## Home Page ####################################
-tk.Label(pages[0], text="Face Recognition System for Criminal Detection", fg="black", bg="#3E3B3C",
-      font="Arial 25 bold", pady=30).pack()
+tk.Label(pages[0], text="EPIANN", fg="black", bg="#e1e8df", font="RamaRaja 40 bold", pady=60).pack()
 
-logo = tk.PhotoImage(file = r"C:\Users\hp\Documents\GitHub\Face-Recognition-For-Criminal-Detection-GUi\img\logo2.png")
-tk.Label(pages[0], image=logo, bg="#3E3B3C").pack(side='left')
+logo = tk.PhotoImage(file=r"E:\FinalYearProjectDetails\MajorprojectFacialRecognition\Facial-Recognition-for-Crime-Detection\colours.png")
+logo_label = tk.Label(pages[0], image=logo, bd=0)
+logo_label.pack(side='bottom', padx=100, pady=50, anchor='sw')  # Adjust padx and pady values as needed
 
-btn_frame = tk.Frame(pages[0], bg="#3E3B3C", pady=30)
+
+
+btn_frame = tk.Frame(pages[0], bg="#e1e8df", pady=60)
 btn_frame.pack()
+btn_frame.pack(pady=(20,40))
 
-tk.Button(btn_frame, text="Input Video", command=selectvideo1)
-tk.Button(btn_frame, text="Add Criminal Details", command=getPage1)
-tk.Button(btn_frame, text="Image Surveillance", command=getPage2)
-tk.Button(btn_frame, text="Video Surveillance", command=getPage3)
+
+
+# Three buttons on the left
+# tk.Button(btn_frame, text="Input Video", command=selectvideo1).grid(row=2, column=0, pady=(10,30), padx=(40, 250))
+tk.Button(btn_frame, text="Register a Person", command=getPage1).grid(row=2, column=0, pady=(10,30), padx=(40, 200))
+tk.Button(btn_frame, text="Image Surveillance", command=getPage2).grid(row=8, column=0, pady=(30,30), padx=(40, 200))
+
+# Two buttons on the right
+tk.Button(btn_frame, text="Video Surveillance", command=getPage3).grid(row=2, column=1, pady=(10,30), padx=(40, 200))
 tk.Button(btn_frame, text="Web Surveillance", command=getPage5).grid(row=8, column=1, pady=(30,30), padx=(40, 200))
 
+# Styling buttons
 for btn in btn_frame.winfo_children():
-    btn.configure(font="Arial 20", width=17, bg="#000000", fg="white",
-        pady=15, bd=0, highlightthickness=0, activebackground="#3E3B3C", activeforeground="white")
-    btn.pack(pady=30)
+    btn.configure(font="Arial 25", width=20, bg="white", fg="black",
+                  bd=0, highlightthickness=0, activebackground="white", activeforeground="black")
 
 
 pages[0].lift()
