@@ -1,19 +1,19 @@
 # facerec.py
-# This is the main File
 import cv2
 import numpy
 import os
-
+import pygame
+#custom
+import os
+from PIL import Image
 size = 2
-haar_cascade = cv2.CascadeClassifier(r'C:\Users\hp\Documents\GitHub\Face-Recognition-For-Criminal-Detection-GUi\face_cascade.xml')
-
-
-
+haar_cascade = cv2.CascadeClassifier(r'E:\FinalYearProjectDetails\MajorprojectFacialRecognition\Facial-Recognition-for-Crime-Detection\face_cascade.xml')
 
 # Part 1: Create fisherRecognizer
 def train_model():
-    model = cv2.face.LBPHFaceRecognizer_create()
-    fn_dir = 'face_samples'
+    model = cv2.face_LBPHFaceRecognizer.create()
+
+    fn_dir = r"E:\FinalYearProjectDetails\MajorprojectFacialRecognition\Facial-Recognition-for-Crime-Detection\face_samples"
 
     print('Training...')
 
@@ -57,7 +57,20 @@ def detect_faces(gray_frame):
     faces = haar_cascade.detectMultiScale(mini_frame)
     return faces
 
-#code to recognize the face 
+pygame.init()
+
+# Function to play safe sound
+def play_safe_sound():
+    pygame.mixer.music.load("safe.mp3")
+    pygame.mixer.music.play()
+
+# Function to play alert sound
+def play_alert_sound():
+    pygame.mixer.music.load("alert.mp3")
+    pygame.mixer.music.play()
+
+
+
 def recognize_face(model, frame, gray_frame, face_coords, names):
     (img_width, img_height) = (112, 92)
     recognized = []
@@ -74,36 +87,64 @@ def recognize_face(model, frame, gray_frame, face_coords, names):
         # Try to recognize the face
         (prediction, confidence) = model.predict(face_resize)
 
-        # print(prediction, confidence)
-        if (confidence<95 and names[prediction] not in recog_names):
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            recog_names.append(names[prediction])
-            recognized.append((names[prediction].capitalize(), confidence))
-        elif (confidence >= 95):
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        # Different colors for recognized and unrecognized faces
+        if confidence < 95:
+            name = names.get(prediction, "Unknown") # Get the name from the dictionary or default to "Unknown"
+            _, crim_data = retrieveData(name)
+            if "Crimes" in crim_data:
+                crimes = int(crim_data["Crimes"])
+                if crimes == 0:
+                    # Green rectangle if no crimes committed
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+                    if name not in recog_names:
+                        recog_names.append(name)
+                        recognized.append((name.capitalize(), confidence))
+                        text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                        font_scale = min(w / text_width, 1)
+                        cv2.putText(frame, name, (x, y + h + 22), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 255, 0), 3, cv2.LINE_AA)
+                    play_safe_sound()
+                else:
+                    # Red rectangle if crimes committed
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 3)
+                    if name not in recog_names:
+                        recog_names.append(name)
+                        recognized.append((name.capitalize(), confidence))
+                        text_width, _ = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                        font_scale = min(w / text_width, 1)
+                        cv2.putText(frame, name, (x, y + h + 22), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 255), 3, cv2.LINE_AA)
+                    play_alert_sound()
+        else:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 165, 255), 5)  # Orange rectangle when face is not recognized
+            text_width, _ = cv2.getTextSize("Not Identified", cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+            font_scale = min(w / text_width, 1)
+            cv2.putText(frame, "Not Identified", (x, y + h + 25), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 165, 255), 2, cv2.LINE_AA)
 
+    
     return (frame, recognized)
 
-#train_model()
+# Train the model
+train_model()
 
-from handler import retrieveData
+
+
+
+# facerec.py
+import cv2
 import numpy as np
+import os
+from mtcnn import MTCNN  # Import MTCNN for face detection
+from handler import retrieveData
 from playsound import playsound
-from mtcnn import MTCNN 
-import pygame
 
-pygame.init()
 
-def play_alert_sound():
-    pygame.mixer.music.load("alert.mp3")
-    pygame.mixer.music.play()
 
-    
+
+# Global variables
 size = 2
-detector = MTCNN()
+detector = MTCNN()  # Initialize MTCNN face detector
 
+# Part 1: Create LBPHFaceRecognizer
 def train_model2():
-    
     model = cv2.face.LBPHFaceRecognizer_create()
 
     fn_dir = 'face_samples'
@@ -145,9 +186,7 @@ def detect_faces2(gray_frame):
     face_coords = [[face['box'][0], face['box'][1], face['box'][2], face['box'][3]] for face in faces]
     return face_coords
 
-    
 
-#train_model()# Part 3: Recognize faces
 # Part 3: Recognize faces
 def recognize_face2(model, frame, gray_frame, face_coords, names):
     (img_width, img_height) = (112, 92)
@@ -195,3 +234,4 @@ def recognize_face2(model, frame, gray_frame, face_coords, names):
 
 # Train the model
 (model, names) = train_model()
+
