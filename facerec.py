@@ -13,7 +13,7 @@ haar_cascade = cv2.CascadeClassifier(r'E:\FinalYearProjectDetails\MajorprojectFa
 def train_model():
     model = cv2.face_LBPHFaceRecognizer.create()
 
-    fn_dir = 'face_samples'
+    fn_dir = r"E:\FinalYearProjectDetails\MajorprojectFacialRecognition\Facial-Recognition-for-Crime-Detection\face_samples"
 
     print('Training...')
 
